@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Webflow → HTML</title>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <div class="app-shell">
+
+    <!-- ═══ LEFT PANEL ═══ -->
+    <aside class="panel-left">
+
+      <header class="app-header">
+        <div class="app-wordmark">
+          <span class="wordmark-from">Webflow</span>
+          <span class="wordmark-arrow"> → </span>
+          <span class="wordmark-to">HTML</span>
+        </div>
+      </header>
+
+      <!-- ZIP Drop Zone -->
+      <div class="zip-zone" id="zipDropZone">
+        <input type="file" id="zipInput" accept=".zip" hidden>
+        <label for="zipInput" class="zip-zone-label">
+          <div class="zip-zone-content">
+            <div class="zip-icon-wrap">
+              <span class="material-symbols-outlined zip-icon-main">folder_zip</span>
+            </div>
+            <p class="zip-primary-text">Drop Webflow ZIP</p>
+            <p class="zip-secondary-text">or click to browse files</p>
+          </div>
+        </label>
+        <div class="zip-file-info" id="zipFileInfo"></div>
+      </div>
+
+      <!-- Download -->
+      <section class="export-section">
+        <button class="btn-save" id="btnSave" disabled>
+          <span class="material-symbols-outlined">download</span>
+          Download Clean ZIP
+        </button>
+      </section>
+
+    </aside>
+
+    <!-- ═══ RIGHT PANEL ═══ -->
+    <main class="panel-right">
+
+      <!-- Log button -->
+      <div class="panel-right-header">
+        <button class="btn-log" id="btnOpenLog" title="View conversion log" disabled>
+          <span class="material-symbols-outlined">receipt_long</span>
+          Log
+        </button>
+      </div>
+
+      <!-- Media folder — always visible at top -->
+      <div class="field-group cdn-field-group top-media-folder">
+        <label class="field-label" for="mediaFolderInput">Media folder</label>
+        <input type="text" class="text-input" id="mediaFolderInput" placeholder="media/">
+      </div>
+
+      <!-- Toggle rows -->
+      <div class="settings-grid">
+
+        <div class="toggle-row">
+          <label class="pref-checkbox">
+            <input type="checkbox" id="prefSrcset" checked disabled>
+            <span class="checkbox-track"></span>
+            <span class="checkbox-label">Turn off responsive images</span>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <label class="pref-checkbox">
+            <input type="checkbox" id="prefVideo" checked disabled>
+            <span class="checkbox-track"></span>
+            <span class="checkbox-label">Use MP4 video format</span>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <label class="pref-checkbox">
+            <input type="checkbox" id="prefTreeShake" checked disabled>
+            <span class="checkbox-track"></span>
+            <span class="checkbox-label">CSS tree shake</span>
+          </label>
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- ── Log Overlay ── -->
+  <div class="modal-backdrop" id="logModal">
+    <div class="modal log-modal">
+      <div class="modal-header">
+        <span class="material-symbols-outlined modal-header-icon">receipt_long</span>
+        <h3>Log</h3>
+        <button class="btn-modal-close" id="btnCloseLog">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body log-modal-body">
+
+        <!-- Settings -->
+        <div class="standalone-log-zone" id="zone-settings">
+          <div class="log-zone-header">
+            <span class="material-symbols-outlined">tune</span>
+            <span>Settings</span>
+          </div>
+          <div class="toggle-log-zone" id="log-srcset" hidden></div>
+          <div class="toggle-log-zone" id="log-video" hidden></div>
+          <div class="toggle-log-zone" id="log-treeshake" hidden></div>
+        </div>
+
+        <!-- Core cleanup -->
+        <div class="standalone-log-zone" id="zone-scrub-webflow" hidden>
+          <div class="log-zone-header">
+            <span class="material-symbols-outlined">cleaning_services</span>
+            <span>Core cleanup</span>
+          </div>
+          <div class="toggle-log-zone" id="log-scrub-webflow"></div>
+        </div>
+
+        <!-- Interactions -->
+        <div class="standalone-log-zone" id="zone-interactions" hidden>
+          <div class="log-zone-header">
+            <span class="material-symbols-outlined">ads_click</span>
+            <span>Interactions</span>
+          </div>
+          <div class="toggle-log-zone" id="log-interactions"></div>
+        </div>
+
+        <!-- Page clean up -->
+        <div class="standalone-log-zone" id="zone-cleanup" hidden>
+          <div class="log-zone-header">
+            <span class="material-symbols-outlined">auto_fix_high</span>
+            <span>Page clean up</span>
+          </div>
+          <div class="toggle-log-zone" id="log-cleanup"></div>
+        </div>
+
+        <p class="log-empty-state" id="logEmptyState">No conversion run yet.</p>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Status toast ── -->
+  <div class="status" id="outputStatus"></div>
+
+  <!-- ── Page Picker Modal ── -->
+  <div class="modal-backdrop" id="pagePickerModal">
+    <div class="modal picker-modal">
+      <div class="modal-header">
+        <span class="material-symbols-outlined modal-header-icon">description</span>
+        <h3>Select a page</h3>
+      </div>
+      <div class="modal-body">
+        <p class="picker-desc">This ZIP contains multiple pages. Choose one to convert.</p>
+        <select class="page-select" id="pagePickerSelect"></select>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-picker-cancel" id="btnPickerCancel">Cancel</button>
+        <button class="btn-picker-confirm" id="btnPickerConfirm">Convert page</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.15.1/beautify-html.min.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+
+</html>
