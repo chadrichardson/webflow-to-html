@@ -12,17 +12,10 @@ function typeFromEvent(eventTypeId) {
 }
 
 export function extractIX2Data(js) {
+  if (!js || !js.trim()) throw new Error('Not a valid Webflow export');
+
   const initStart = js.indexOf('Webflow.require("ix2").init(');
-  if (initStart === -1) {
-    const looksLikeCss = /[a-z-]+\s*:\s*[^;{]+;/.test(js.slice(0, 500));
-    const looksLikeHtml = /<html|<!DOCTYPE/i.test(js.slice(0, 200));
-    const hint = looksLikeHtml
-      ? " It looks like you pasted the HTML file — webflow.js is needed."
-      : looksLikeCss
-        ? " It looks like you pasted a CSS file — webflow.js is needed."
-        : " Make sure you pasted the full content of webflow.js.";
-    throw new Error('Webflow.require("ix2").init( not found.' + hint);
-  }
+  if (initStart === -1) return { events: {}, actionLists: {} };
 
   const rawStart = initStart + 'Webflow.require("ix2").init('.length;
   let depth = 0, dataEnd = -1;
